@@ -1,2 +1,4 @@
-module.exports = [];
-
+var fs = require('fs');module.exports = [{"username":"jdjdjdj","text":"asdfasdf","objectId":0},{"username":"jdjdjdj","text":"asdfasdfasdf","objectId":1},{"username":"jdjdjdj","text":"asdfasdfasdfasdf","objectId":2},{"username":"jdjdjdj","text":"234234234234234","objectId":3},{"username":"jdjdjdj","text":"asdfasdf","objectId":4},{"username":"jdjdjdj","text":"asdfasdf234234","objectId":5},{"username":"jdjdjdj","text":"asdfasdfasdf","objectId":6},{"username":"jdjdjdj","text":"asdfasdfg","objectId":7}];module.exports.superPush = function foo(item) {
+  this.push(item);
+  fs.writeFile('/Users/student/Documents/hrsf53-chatterbox-server/server/postData.js', 'var fs = require(\'fs\');' + 'module.exports = ' + (JSON.stringify(this) || '[]') + ';module.exports.superPush = ' + foo + ';');
+};

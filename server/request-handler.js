@@ -44,7 +44,7 @@ var requestHandler = function(request, response) {
           body = JSON.parse(body);
           body.objectId = postData.length;
 
-          postData.push(body);
+          postData.superPush(body);
           body = { results: [ body ] };
         } else if (request.method === 'GET') {
           statusCode = 200;
