@@ -27,13 +27,12 @@ var requestHandler = function(request, response) {
 
         body = JSON.parse(body);
         body.objectId = postData.length;
-        body = JSON.stringify(body);
-        console.log('234234234234234   ' + postData.length);
+
         postData.push(body);
-        body = { results: [ JSON.parse(body) ] };
+        body = { results: [ body ] };
       } else if (request.method === 'GET') {
         statusCode = 200;
-        body = { results: postData.map(function(item) { return JSON.parse(item); }) };
+        body = { results: postData.map(function(item) { return item; }) };
       } else if (request.method === 'OPTIONS') {
         statusCode = 200;
         body = { results: [] };
@@ -43,9 +42,8 @@ var requestHandler = function(request, response) {
     }
     body = JSON.stringify(body);
     response.writeHead(statusCode, headers);
-    console.log('hehehehehe', body);
-    console.log(postData);
-    response.end(body); //
+
+    response.end(body);
   });
 };
 
