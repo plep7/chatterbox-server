@@ -1,28 +1,4 @@
-/*************************************************************
-
-You should implement your request handler function in this file.
-
-requestHandler is already getting passed to http.createServer()
-in basic-server.js, but it won't work as is.
-
-You'll have to figure out a way to export this function from
-this file and include it in basic-server.js so that it actually works.
-
-*Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
-
-**************************************************************/
-// These headers will allow Cross-Origin Resource Sharing (CORS).
-// This code allows this server to talk to websites that
-// are on different domains, for instance, your chat client.
-//
-// Your chat client is running from a url like file://your/chat/client/index.html,
-// which is considered a different domain.
-//
-// Another way to get around this restriction is to serve you chat
-// client from this domain by setting up static file serving.
-var http = require('http');
-// var qs = require('querystring');
-var postData = [];
+var postData = require('./postData');
 
 var defaultCorsHeaders = {
   'access-control-allow-origin': '*',
@@ -34,14 +10,14 @@ var defaultCorsHeaders = {
 var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
-  var statusCode;
+  var statusCode = 200;
   var body = '';
 
   var headers = defaultCorsHeaders;
   headers['Content-Type'] = 'application/json';
 
-  request.addListener('data', function(chunk) {
-    body += chunk;
+  request.addListener('data', function(dataChunk) {
+    body += dataChunk;
   });
 
   request.addListener('end', function() {
@@ -49,20 +25,28 @@ var requestHandler = function(request, response) {
       if (request.method === 'POST') {
         statusCode = 201;
 
+        body = JSON.parse(body);
+        body.objectId = postData.length;
+        body = JSON.stringify(body);
+        console.log('234234234234234   ' + postData.length);
         postData.push(body);
         body = { results: [ JSON.parse(body) ] };
       } else if (request.method === 'GET') {
         statusCode = 200;
         body = { results: postData.map(function(item) { return JSON.parse(item); }) };
-      } 
+      } else if (request.method === 'OPTIONS') {
+        statusCode = 200;
+        body = { results: [] };
+      }
     } else {
       statusCode = 404;
     }
-
+    body = JSON.stringify(body);
     response.writeHead(statusCode, headers);
-    response.end(JSON.stringify(body));
+    console.log('hehehehehe', body);
+    console.log(postData);
+    response.end(body); //
   });
-
 };
 
 
