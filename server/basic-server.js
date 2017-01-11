@@ -1,44 +1,30 @@
-/* Import node's http module: */
-// import http from 'http';
-// import handleRequest from './request-handler';
+var classes = require('./request-handler');
+var express = require('express');
+var path = require('path');
+var bodyParser = require('body-parser');
+var app = module.exports = express();
+var postData = require('./postData');
 
-var http = require('http');
-var handleRequest = require('./request-handler');
-// Every server needs to listen on a port with a unique number. The
-// standard port for HTTP servers is port 80, but that port is
-// normally already claimed by another server and/or not accessible
-// so we'll use a standard testing port like 3000, other common development
-// ports are 8080 and 1337.
-var port = 3000;
+app.set('port', 3000);
+app.use(express.static(path.join(__dirname, '/../client')));
 
-// For now, since you're running this server on your local machine,
-// we'll have it listen on the IP address 127.0.0.1, which is a
-// special address that always refers to localhost.
-var ip = '127.0.0.1';
+app.use(bodyParser.json({type: 'application/json'}));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
+app.all('*', function (req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('access-control-allow-methods', 'OPTIONS, GET, POST, PUT, DELETE');
+  res.setHeader('access-control-allow-headers', 'content-type, accept');
+  res.setHeader('access-control-max-age', 10); // Seconds.
+  next();
+});
 
+app.options('*', function(req, res, next) {
+  res.send(200);
+});
 
-// We use node's http module to create a server.
-//
-// The function we pass to http.createServer will be used to handle all
-// incoming requests.
-//
-// After creating the server, we will tell it to listen on the given port and IP. */
+app.use('/classes/messages', classes);
 
-var server = http.createServer(handleRequest.requestHandler);
-console.log('Listening on http://' + ip + ':' + port);
-server.listen(port, ip);
-
-// To start this server, run:
-//
-//   node basic-server.js
-//
-// on the command line.
-//
-// To connect to the server, load http://127.0.0.1:3000 in your web
-// browser.
-//
-// server.listen() will continue running as long as there is the
-// possibility of serving more requests. To stop your server, hit
-// Ctrl-C on the command line.
-
+app.listen(app.get('port'));

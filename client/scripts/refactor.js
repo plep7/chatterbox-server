@@ -60,7 +60,6 @@ app = {
   },
 
   displayMessage: function(message) {
-    console.log(message.objectId);
     if (!app.onscreenMessages[message.objectId]) {
       var $html = app.renderMessage(message);
       $('#chats').prepend($html);
@@ -82,6 +81,7 @@ app = {
       url: app.server,
       contentType: 'application/json',
       success: function(json) {
+        console.log(JSON.stringify(json.results, null, 2));
         app.displayMessages(json.results);
       },
       complete: function() {
